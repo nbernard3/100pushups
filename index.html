@@ -3,14 +3,16 @@
 
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Get ready to sweat!</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-    <div id="reps-counter">
-        <div id="start-button"><button v-on:click='init'>Start!</div></button>
-        <div>{{ fps }}fps</div>
-        <div><canvas id="canvas"></canvas></div>
+    <main id="reps-counter">
+        <video id="camera-view" autoplay playsinline></video>
+        <canvas id="posenet-viz"></canvas>
+        <div id="start-button"><button v-on:click='init'>Go go go go!!</div></button>
         <div id="label-container">
             <ul>
                 <li v-for="label in labels">
@@ -19,8 +21,9 @@
                 </li>
             </ul>
         </div>
+        <div>{{ fps }}fps</div>
         <p>reps: {{ iReps }}</p>
-    </div>
+    </main>
 
 
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>

@@ -45,7 +45,7 @@ async function init() {
     window.requestAnimationFrame(loop);
 
     // append/get elements to the DOM
-    const canvas = document.getElementById("canvas");
+    const canvas = document.getElementById("posenet-viz");
     canvas.width = size; canvas.height = size;
     ctx = canvas.getContext("2d");
 }
