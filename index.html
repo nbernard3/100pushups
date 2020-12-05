@@ -1,1 +1,32 @@
-<h1>Hello!</h1>
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Get ready to sweat!</title>
+</head>
+
+<body>
+    <div id="squat-counter">
+        <div id="start-button"><button v-on:click='init'>Start!</div></button>
+        <div>{{ fps }}fps</div>
+        <div><canvas id="canvas"></canvas></div>
+        <div id="label-container">
+            <ul>
+                <li v-for="label in labels">
+                    {{ label.name }}
+                    <meter v-bind:value="label.filteredProbability"></meter>
+                </li>
+            </ul>
+        </div>
+        <p>reps: {{ iReps }}</p>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/pose@0.8/dist/teachablemachine-pose.min.js"></script>
+    <script src="pushups.js"></script>
+</body>
+
+</html>
