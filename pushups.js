@@ -6,8 +6,8 @@ const URL = "./model/"; // ne peut-être assigné qu'une fois
 const bufferSize = 10;
 let model, webcam, ctx; // scope limité à ce script
 
-var squatCounter = new Vue({
-    el: "#squat-counter",
+var repsCounter = new Vue({
+    el: "#reps-counter",
     data: {
         iReps: 0,
         labels: [],
@@ -30,7 +30,7 @@ async function init() {
         metadataURL);
 
     model.getClassLabels().forEach(
-        el => squatCounter.labels.push({
+        el => repsCounter.labels.push({
             name: el,
             probability: new Array(bufferSize).fill(0),
             filteredProbability: 0,
@@ -56,8 +56,8 @@ async function loop(timestamp) {
     window.requestAnimationFrame(loop);
 
     tNow = performance.now();
-    squatCounter.fps = (1000. / (tNow - squatCounter.tPrevious)).toFixed(1);
-    squatCounter.tPrevious = tNow;
+    repsCounter.fps = (1000. / (tNow - repsCounter.tPrevious)).toFixed(1);
+    repsCounter.tPrevious = tNow;
 }
 
 async function predict() {
@@ -68,12 +68,12 @@ async function predict() {
     const prediction = await model.predict(posenetOutput);
 
     for (let i = 0; i < prediction.length; i++) {
-        probability = squatCounter.labels[i].probability;
+        probability = repsCounter.labels[i].probability;
         probability.shift();
         probability.push(prediction[i].probability);
 
-        squatCounter.labels[i].probability = probability;
-        squatCounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
+        repsCounter.labels[i].probability = probability;
+        repsCounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
     }
 
     drawPose(pose);
