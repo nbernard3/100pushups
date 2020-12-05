@@ -16,13 +16,13 @@ const startbutton = {
 
 Vue.createApp(startbutton).mount("#start-button");
 
-const cameraview = document.querySelector("#camera-view");
+const cameraviz = document.querySelector("#camera-viz");
 
 function startCamera() {
     var constraints = { video: { facingMode: "user" }, audio: false };
     navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
         track = stream.getTracks()[0];
-        cameraview.srcObject = stream;
+        cameraviz.srcObject = stream;
     }).catch(function (error) {
         console.error("Oops. Something is broken.", error);
     });

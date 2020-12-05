@@ -5,14 +5,14 @@ html, body{
     width: 100%;
 }
 
-#pushups-app, #camera-view, #posenet-viz{
+#pushups-app, #camera-viz, #posenet-viz{
     position: fixed;
     height: 100%;
     width: 100%;
     object-fit: cover;
 }
 
-#camera-view, #posenet-viz{
+#camera-viz, #posenet-viz{
     transform: scaleX(-1);
     filter: FlipH;
 }
