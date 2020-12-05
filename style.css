@@ -5,7 +5,7 @@ html, body{
     width: 100%;
 }
 
-#reps-counter, #camera-view, #posenet-viz{
+#pushups-app, #camera-view, #posenet-viz{
     position: fixed;
     height: 100%;
     width: 100%;
@@ -17,7 +17,7 @@ html, body{
     filter: FlipH;
 }
 
-#start-button{
+#start-button button{
     width: 200px;
     background-color: black;
     color: white;
