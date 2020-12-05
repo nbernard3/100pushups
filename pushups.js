@@ -8,7 +8,7 @@ const bufferSize = 10;
 const startbutton = {
     methods: {
         start() {
-            console.info("button clicked");
+            console.debug("App started.")
             startCamera();
         }
     }
