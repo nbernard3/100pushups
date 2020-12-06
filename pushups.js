@@ -10,7 +10,9 @@ const bufferSize = 10;
 const pushupsApp = {
     data() {
         return {
-            started: false
+            started: false,
+            iReps: 0,
+            fps: 90.0,
         }
     },
     methods: {

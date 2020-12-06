@@ -31,3 +31,12 @@ html, body{
     bottom: 30px;
     left: calc(50% - 100px);
 }
+
+#reps-counter{
+    position: fixed;
+    top: 0px;
+    width: 100%;
+    padding: 5px;
+    color: #669900;
+    background-color: rgba(0, 0, 0, 0.2);
+}

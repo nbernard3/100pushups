@@ -13,7 +13,9 @@
         <video id="camera-viz" autoplay playsinline></video>
         <canvas id="posenet-viz"></canvas>
         <button id="start-button" v-on:click="startCamera" v-if="!started">GoGoGo!!</button>
-        <div id="reps-counter"></div>
+        <div id="reps-counter" v-if="started">
+            <p>{{fps}}fps - {{iReps}}reps</p>
+        </div>
     </main>
 
     <script src="https://unpkg.com/vue@next"></script>
