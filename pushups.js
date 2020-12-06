@@ -2,7 +2,6 @@
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
 const bufferSize = 10;
-let model, webcam, ctx; // scope limité à ce script
 
 // Everything is put in the same Vue component in order to ease data sharing.
 // Also, there is no particular component re-use need, so better keep things simple!
@@ -20,6 +19,7 @@ let pushupsApp = Vue.createApp(
                 startCamera();
                 await loadPosenet();
                 this.started = true;
+                launchPredictionLoop();
             },
         }
     }).mount("#pushups-app");
@@ -52,6 +52,51 @@ async function loadPosenet() {
         metadataURL);
 }
 
+function launchPredictionLoop() {
+    posenetviz.height = cameraviz.height;
+    posenetviz.width = cameraviz.width;
+    window.requestAnimationFrame(loop);
+}
+
+async function loop(timestamp) {
+    // webcam.update(); // update the webcam frame
+    await predict();
+    window.requestAnimationFrame(loop);
+
+    // tNow = performance.now();
+    // repscounter.fps = (1000. / (tNow - repscounter.tPrevious)).toFixed(1);
+    // repscounter.tPrevious = tNow;
+}
+
+async function predict() {
+    // Prediction #1: run input through posenet
+    // estimatePose can take in an image, video or canvas html element
+    const { pose, posenetOutput } = await model.estimatePose(cameraviz);
+    // Prediction 2: run input through teachable machine classification model
+    const prediction = await model.predict(posenetOutput);
+
+    // for (let i = 0; i < prediction.length; i++) {
+    //     probability = repscounter.labels[i].probability;
+    //     probability.shift();
+    //     probability.push(prediction[i].probability);
+
+    //     repscounter.labels[i].probability = probability;
+    //     repscounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
+    // }
+
+    drawPose(pose);
+}
+
+function drawPose(pose) {
+    ctx = posenetviz.getContext("2d");
+    ctx.drawImage(webcam.canvas, 0, 0);
+    if (pose) {
+        const minPartConfidence = 0.5;
+        tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
+        tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
+    }
+}
+
 
 // model.getClassLabels().forEach(
 //     el => repscounter.labels.push({
@@ -72,47 +117,3 @@ async function loadPosenet() {
 // const canvas = document.getElementById("posenet-viz");
 // canvas.width = size; canvas.height = size;
 // ctx = canvas.getContext("2d");
-
-
-
-
-
-async function loop(timestamp) {
-    webcam.update(); // update the webcam frame
-    await predict();
-    window.requestAnimationFrame(loop);
-
-    tNow = performance.now();
-    repscounter.fps = (1000. / (tNow - repscounter.tPrevious)).toFixed(1);
-    repscounter.tPrevious = tNow;
-}
-
-async function predict() {
-    // Prediction #1: run input through posenet
-    // estimatePose can take in an image, video or canvas html element
-    const { pose, posenetOutput } = await model.estimatePose(webcam.canvas);
-    // Prediction 2: run input through teachable machine classification model
-    const prediction = await model.predict(posenetOutput);
-
-    for (let i = 0; i < prediction.length; i++) {
-        probability = repscounter.labels[i].probability;
-        probability.shift();
-        probability.push(prediction[i].probability);
-
-        repscounter.labels[i].probability = probability;
-        repscounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
-    }
-
-    drawPose(pose);
-}
-
-function drawPose(pose) {
-    if (webcam.canvas) {
-        ctx.drawImage(webcam.canvas, 0, 0);
-        if (pose) {
-            const minPartConfidence = 0.5;
-            tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
-            tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
-        }
-    }
-}
