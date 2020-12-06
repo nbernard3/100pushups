@@ -5,6 +5,8 @@
 const URL = "./model/"; // ne peut-être assigné qu'une fois
 const bufferSize = 10;
 
+// Everything is put in the same Vue component in order to ease data sharing.
+// Also, there is no particular component re-use need, so better keep things simple!
 const pushupsApp = {
     data() {
         return {
