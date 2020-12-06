@@ -2,6 +2,7 @@
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
 const bufferSize = 10;
+let model, webcam, ctx; // scope limité à ce script
 
 // Everything is put in the same Vue component in order to ease data sharing.
 // Also, there is no particular component re-use need, so better keep things simple!
