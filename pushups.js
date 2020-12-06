@@ -1,13 +1,13 @@
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
-// the link to your model provided by Teachable Machine export panel
-const URL = "./model/"; // ne peut-être assigné qu'une fois
+
 const bufferSize = 10;
+let model, webcam, ctx; // scope limité à ce script
 
 // Everything is put in the same Vue component in order to ease data sharing.
 // Also, there is no particular component re-use need, so better keep things simple!
-const pushupsApp = {
+let pushupsApp = Vue.createApp({
     data() {
         return {
             started: false,
@@ -16,50 +16,43 @@ const pushupsApp = {
         }
     },
     methods: {
-        startCamera() {
-            const cameraviz = document.querySelector("#camera-viz");
-            var constraints = { video: { facingMode: "user" }, audio: false };
-
-            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-                track = stream.getTracks()[0];
-                cameraviz.srcObject = stream;
-            }).catch(function (error) {
-                console.error("Oops. Something is broken.", error);
-            });
-
-            this.started = true
-        }
+        start() {
+            startCamera();
+            loadPosenet();
+            this.started = true;
+        },
     }
+});
 
-};
+pushupsApp.mount("#pushups-app");
 
-Vue.createApp(pushupsApp).mount("#pushups-app");
+function startCamera() {
 
+    const cameraviz = document.querySelector("#camera-viz");
+    const constraints = { video: { facingMode: "user" }, audio: false };
 
-function startPosenet() {
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+        track = stream.getTracks()[0];
+        cameraviz.srcObject = stream;
+    }).catch(function (error) {
+        console.error("Oops. Something is broken.", error);
+    });
+}
 
-    // let model, webcam, ctx; // scope limité à ce script
-    // new Vue({
-    //     el: "#reps-counter",
-    //     data: {
-    //         iReps: 0,
-    //         labels: [],
-    //         fps: 0.0,
-    //         tPrevious: 0.0,
-    //     },
-    //     methods: {
-    //         start: start
-    //     },
-    // })
+function loadPosenet() {
 
-    // const modelURL = URL + "model.json";
-    // const metadataURL = URL + "metadata.json";
+    const URL = "./model/";
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
     // load the model and metadata
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
-    // model = await tmPose.load(
-    //     modelURL,
-    //     metadataURL);
+    model = tmPose.load(
+        modelURL,
+        metadataURL);
+}
+
+async function startPosenet() {
 
     // model.getClassLabels().forEach(
     //     el => repscounter.labels.push({
@@ -114,7 +107,6 @@ async function predict() {
     drawPose(pose);
 }
 
-
 function drawPose(pose) {
     if (webcam.canvas) {
         ctx.drawImage(webcam.canvas, 0, 0);
@@ -125,6 +117,3 @@ function drawPose(pose) {
         }
     }
 }
-
-
-
