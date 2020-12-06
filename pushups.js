@@ -1,89 +1,80 @@
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
-// the link to your model provided by Teachable Machine export panel
-const URL = "./model/"; // ne peut-être assigné qu'une fois
 const bufferSize = 10;
 
 // Everything is put in the same Vue component in order to ease data sharing.
 // Also, there is no particular component re-use need, so better keep things simple!
-const pushupsApp = {
-    data() {
-        return {
-            started: false,
-            iReps: 0,
-            fps: 90.0,
+let pushupsApp = Vue.createApp(
+    {
+        data() {
+            return {
+                started: false,
+                iReps: 0,
+                fps: 90.0,
+            }
+        },
+        methods: {
+            async start() {
+                startCamera();
+                await loadPosenet();
+                this.started = true;
+            },
         }
-    },
-    methods: {
-        startCamera() {
-            const cameraviz = document.querySelector("#camera-viz");
-            var constraints = { video: { facingMode: "user" }, audio: false };
+    }).mount("#pushups-app");
 
-            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-                track = stream.getTracks()[0];
-                cameraviz.srcObject = stream;
-            }).catch(function (error) {
-                console.error("Oops. Something is broken.", error);
-            });
+const cameraviz = document.querySelector("#camera-viz");
+const posenetviz = document.querySelector("#posenet-viz");
+let model; // scope limité à ce script
 
-            this.started = true
-        }
-    }
+function startCamera() {
 
-};
+    const constraints = { video: { facingMode: "user" }, audio: false };
+    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+        track = stream.getTracks()[0];
+        cameraviz.srcObject = stream;
+    }).catch(function (error) {
+        console.error("Oops. Something is broken.", error);
+    });
+}
 
-Vue.createApp(pushupsApp).mount("#pushups-app");
+async function loadPosenet() {
 
-
-function startPosenet() {
-
-    // let model, webcam, ctx; // scope limité à ce script
-    // new Vue({
-    //     el: "#reps-counter",
-    //     data: {
-    //         iReps: 0,
-    //         labels: [],
-    //         fps: 0.0,
-    //         tPrevious: 0.0,
-    //     },
-    //     methods: {
-    //         start: start
-    //     },
-    // })
-
-    // const modelURL = URL + "model.json";
-    // const metadataURL = URL + "metadata.json";
+    const URL = "./model/";
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
     // load the model and metadata
     // Note: the pose library adds a tmPose object to your window (window.tmPose)
-    // model = await tmPose.load(
-    //     modelURL,
-    //     metadataURL);
-
-    // model.getClassLabels().forEach(
-    //     el => repscounter.labels.push({
-    //         name: el,
-    //         probability: new Array(bufferSize).fill(0),
-    //         filteredProbability: 0,
-    //     }))
-
-    // // Convenience function to setup a webcam
-    // const size = 200;
-    // const flip = true; // whether to flip the webcam
-    // webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-    // await webcam.setup(); // request access to the webcam
-    // await webcam.play();
-    // window.requestAnimationFrame(loop);
-
-    // // append/get elements to the DOM
-    // const canvas = document.getElementById("posenet-viz");
-    // canvas.width = size; canvas.height = size;
-    // ctx = canvas.getContext("2d");
+    model = await tmPose.load(
+        modelURL,
+        metadataURL);
 }
 
 
-const posenetviz = document.querySelector("#posenet-viz");
+// model.getClassLabels().forEach(
+//     el => repscounter.labels.push({
+//         name: el,
+//         probability: new Array(bufferSize).fill(0),
+//         filteredProbability: 0,
+//     }))
+
+// // Convenience function to setup a webcam
+// const size = 200;
+// const flip = true; // whether to flip the webcam
+// webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
+// await webcam.setup(); // request access to the webcam
+// await webcam.play();
+// window.requestAnimationFrame(loop);
+
+// // append/get elements to the DOM
+// const canvas = document.getElementById("posenet-viz");
+// canvas.width = size; canvas.height = size;
+// ctx = canvas.getContext("2d");
+
+
+
+
 
 async function loop(timestamp) {
     webcam.update(); // update the webcam frame
@@ -114,7 +105,6 @@ async function predict() {
     drawPose(pose);
 }
 
-
 function drawPose(pose) {
     if (webcam.canvas) {
         ctx.drawImage(webcam.canvas, 0, 0);
@@ -125,6 +115,3 @@ function drawPose(pose) {
         }
     }
 }
-
-
-
