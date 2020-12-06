@@ -12,7 +12,7 @@
     <main id="pushups-app">
         <video id="camera-viz" autoplay playsinline></video>
         <canvas id="posenet-viz"></canvas>
-        <button id="start-button" v-on:click="startCamera">GoGoGo!!</button>
+        <button id="start-button" v-on:click="startCamera" v-if="!started">GoGoGo!!</button>
         <div id="reps-counter"></div>
     </main>
 

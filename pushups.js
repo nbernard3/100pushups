@@ -6,6 +6,11 @@ const URL = "./model/"; // ne peut-être assigné qu'une fois
 const bufferSize = 10;
 
 const pushupsApp = {
+    data() {
+        return {
+            started: false
+        }
+    },
     methods: {
         startCamera() {
             const cameraviz = document.querySelector("#camera-viz");
@@ -17,6 +22,8 @@ const pushupsApp = {
             }).catch(function (error) {
                 console.error("Oops. Something is broken.", error);
             });
+
+            this.started = true
         }
     }
 
