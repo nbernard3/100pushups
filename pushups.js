@@ -5,28 +5,24 @@
 const URL = "./model/"; // ne peut-être assigné qu'une fois
 const bufferSize = 10;
 
-const startbutton = {
+const pushupsApp = {
     methods: {
-        start() {
-            console.debug("App started.")
-            startCamera();
+        startCamera() {
+            const cameraviz = document.querySelector("#camera-viz");
+            var constraints = { video: { facingMode: "user" }, audio: false };
+
+            navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
+                track = stream.getTracks()[0];
+                cameraviz.srcObject = stream;
+            }).catch(function (error) {
+                console.error("Oops. Something is broken.", error);
+            });
         }
     }
-}
 
-Vue.createApp(startbutton).mount("#start-button");
+};
 
-const cameraviz = document.querySelector("#camera-viz");
-
-function startCamera() {
-    var constraints = { video: { facingMode: "user" }, audio: false };
-    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        track = stream.getTracks()[0];
-        cameraviz.srcObject = stream;
-    }).catch(function (error) {
-        console.error("Oops. Something is broken.", error);
-    });
-}
+Vue.createApp(pushupsApp).mount("#pushups-app");
 
 
 function startPosenet() {

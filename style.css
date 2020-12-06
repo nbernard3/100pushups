@@ -17,7 +17,7 @@ html, body{
     filter: FlipH;
 }
 
-#start-button button{
+#start-button{
     width: 200px;
     background-color: black;
     color: white;
