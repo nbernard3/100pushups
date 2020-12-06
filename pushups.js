@@ -15,18 +15,17 @@ let pushupsApp = Vue.createApp(
             }
         },
         methods: {
-            async start() {
+            start() {
                 startCamera();
-                await loadPosenet();
-                this.started = true;
+                loadPosenet();
                 launchPredictionLoop();
+                this.started = true;
             },
         }
     }).mount("#pushups-app");
 
 const cameraviz = document.querySelector("#camera-viz");
 const posenetviz = document.querySelector("#posenet-viz");
-let model; // scope limité à ce script
 
 function startCamera() {
 
@@ -38,6 +37,8 @@ function startCamera() {
         console.error("Oops. Something is broken.", error);
     });
 }
+
+let model; // scope limité à ce script
 
 async function loadPosenet() {
 
@@ -55,25 +56,27 @@ async function loadPosenet() {
 function launchPredictionLoop() {
     posenetviz.height = cameraviz.height;
     posenetviz.width = cameraviz.width;
-    window.requestAnimationFrame(loop);
+    window.requestAnimationFrame(predictionLoop);
 }
 
-async function loop(timestamp) {
-    // webcam.update(); // update the webcam frame
-    await predict();
-    window.requestAnimationFrame(loop);
-
+function predictionLoop(timestamp) {
     // tNow = performance.now();
     // repscounter.fps = (1000. / (tNow - repscounter.tPrevious)).toFixed(1);
     // repscounter.tPrevious = tNow;
+
+    // webcam.update(); // update the webcam frame
+    const { pose, prediction } = predict(cameraviz);
+    drawPose(pose);
+    window.requestAnimationFrame(predictionLoop);
 }
 
-async function predict() {
+function predict(imageinput) {
     // Prediction #1: run input through posenet
     // estimatePose can take in an image, video or canvas html element
-    const { pose, posenetOutput } = await model.estimatePose(cameraviz);
+    const { pose, posenetOutput } = model.estimatePose(imageinput);
     // Prediction 2: run input through teachable machine classification model
-    const prediction = await model.predict(posenetOutput);
+    const prediction = model.predict(posenetOutput);
+    return { pose, prediction };
 
     // for (let i = 0; i < prediction.length; i++) {
     //     probability = repscounter.labels[i].probability;
@@ -84,7 +87,6 @@ async function predict() {
     //     repscounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
     // }
 
-    drawPose(pose);
 }
 
 function drawPose(pose) {
