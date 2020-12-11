@@ -16,8 +16,8 @@ const pushupsApp = Vue.createApp(
         },
         methods: {
             async start() {
-                startCamera();
-                loadPosenet();
+                await startCamera();
+                await loadPosenet();
                 // launchPredictionLoop();
                 this.started = true;
             },
