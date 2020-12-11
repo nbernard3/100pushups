@@ -5,7 +5,7 @@ const bufferSize = 10;
 
 // Everything is put in the same Vue component in order to ease data sharing.
 // Also, there is no particular component re-use need, so better keep things simple!
-let pushupsApp = Vue.createApp(
+const pushupsApp = Vue.createApp(
     {
         data() {
             return {
@@ -15,10 +15,10 @@ let pushupsApp = Vue.createApp(
             }
         },
         methods: {
-            start() {
+            async start() {
                 startCamera();
                 loadPosenet();
-                launchPredictionLoop();
+                // launchPredictionLoop();
                 this.started = true;
             },
         }
@@ -27,15 +27,12 @@ let pushupsApp = Vue.createApp(
 const cameraviz = document.querySelector("#camera-viz");
 const posenetviz = document.querySelector("#posenet-viz");
 
-function startCamera() {
+async function startCamera() {
 
-    const constraints = { video: { facingMode: "user" }, audio: false };
-    navigator.mediaDevices.getUserMedia(constraints).then(function (stream) {
-        track = stream.getTracks()[0];
-        cameraviz.srcObject = stream;
-    }).catch(function (error) {
-        console.error("Oops. Something is broken.", error);
-    });
+    let constraints = { video: { facingMode: "user" }, audio: false };
+    let stream = await navigator.mediaDevices.getUserMedia(constraints);
+    // track = stream.getTracks()[0];
+    cameraviz.srcObject = stream;
 }
 
 let model; // scope limité à ce script
