@@ -1,0 +1,10 @@
+{
+    "typeAcquisition": {
+        "enable": true,
+        "include": [
+            "vue",
+            "@tensorflow/tfjs",
+            "@teachablemachine/pose"
+        ]
+    }
+}
