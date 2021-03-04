@@ -1,6 +1,8 @@
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
+"use strict";
+
 const bufferSize = 10;
 
 // Everything is put in the same Vue component in order to ease data sharing.
