@@ -5,35 +5,14 @@
 
 const bufferSize = 10;
 
-// Everything is put in the same Vue component in order to ease data sharing.
-// Also, there is no particular component re-use need, so better keep things simple!
-const pushupsApp = Vue.createApp(
-    {
-        data() {
-            return {
-                started: false,
-                iReps: 0,
-                fps: 90.0,
-            }
-        },
-        methods: {
-            async start() {
-                await startCamera();
-                await loadPosenet();
-                // launchPredictionLoop();
-                this.started = true;
-            },
-        }
-    }).mount("#pushups-app");
-
 const cameraviz = document.querySelector("#camera-viz");
 const posenetviz = document.querySelector("#posenet-viz");
+const startbutton = document.querySelector("#start-button");
 
 async function startCamera() {
 
     let constraints = { video: { facingMode: "user" }, audio: false };
     let stream = await navigator.mediaDevices.getUserMedia(constraints);
-    // track = stream.getTracks()[0];
     cameraviz.srcObject = stream;
 }
 
@@ -69,12 +48,12 @@ function predictionLoop(timestamp) {
     window.requestAnimationFrame(predictionLoop);
 }
 
-function predict(imageinput) {
+async function predict(imageinput) {
     // Prediction #1: run input through posenet
     // estimatePose can take in an image, video or canvas html element
-    const { pose, posenetOutput } = model.estimatePose(imageinput);
+    const { pose, posenetOutput } = await model.estimatePose(imageinput);
     // Prediction 2: run input through teachable machine classification model
-    const prediction = model.predict(posenetOutput);
+    const prediction = await model.predict(posenetOutput);
     return { pose, prediction };
 
     // for (let i = 0; i < prediction.length; i++) {
@@ -89,8 +68,8 @@ function predict(imageinput) {
 }
 
 function drawPose(pose) {
-    ctx = posenetviz.getContext("2d");
-    ctx.drawImage(webcam.canvas, 0, 0);
+
+    const ctx = posenetviz.getContext("2d");
     if (pose) {
         const minPartConfidence = 0.5;
         tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
