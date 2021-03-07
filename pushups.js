@@ -17,6 +17,14 @@ const startbutton = document.querySelector("#start-button");
 
 let model; // scope limité à ce script
 
+startbutton.onclick = async function () {
+
+    startbutton.style.display = "none";
+    await startCamera();
+    await loadPosenet();
+    launchPredictionLoop();
+};
+
 /**
  * Open the camera and launch streaming.
  */
@@ -25,20 +33,23 @@ async function startCamera() {
     let constraints = { video: { facingMode: "user" }, audio: false };
     let stream = await navigator.mediaDevices.getUserMedia(constraints);
     cameraviz.srcObject = stream;
+    await cameraviz.play();
+    console.info("Camera started");
 }
 
-
+/**
+ * Loads the artificial brain.
+ */
 async function loadPosenet() {
 
     const URL = "./model/";
     const modelURL = URL + "model.json";
     const metadataURL = URL + "metadata.json";
 
-    // load the model and metadata
-    // Note: the pose library adds a tmPose object to your window (window.tmPose)
     model = await tmPose.load(
         modelURL,
         metadataURL);
+    console.info("Model launched");
 }
 
 function launchPredictionLoop() {
@@ -52,7 +63,6 @@ function predictionLoop(timestamp) {
     // repscounter.fps = (1000. / (tNow - repscounter.tPrevious)).toFixed(1);
     // repscounter.tPrevious = tNow;
 
-    // webcam.update(); // update the webcam frame
     const { pose, prediction } = predict(cameraviz);
     drawPose(pose);
     window.requestAnimationFrame(predictionLoop);
@@ -86,22 +96,6 @@ function drawPose(pose) {
         tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
     }
 }
-
-
-// model.getClassLabels().forEach(
-//     el => repscounter.labels.push({
-//         name: el,
-//         probability: new Array(bufferSize).fill(0),
-//         filteredProbability: 0,
-//     }))
-
-// // Convenience function to setup a webcam
-// const size = 200;
-// const flip = true; // whether to flip the webcam
-// webcam = new tmPose.Webcam(size, size, flip); // width, height, flip
-// await webcam.setup(); // request access to the webcam
-// await webcam.play();
-// window.requestAnimationFrame(loop);
 
 // // append/get elements to the DOM
 // const canvas = document.getElementById("posenet-viz");
