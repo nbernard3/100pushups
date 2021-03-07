@@ -1,14 +1,25 @@
 // More API functions here:
 // https://github.com/googlecreativelab/teachablemachine-community/tree/master/libraries/pose
 
+// Enforce modern Javascript mode
 "use strict";
 
-const bufferSize = 10;
+const BUFFER_SIZE = 10;
 
+// Element holding the vizualisation of what the camera sees
 const cameraviz = document.querySelector("#camera-viz");
+
+// Element holding the vizualisation of the posenet output
 const posenetviz = document.querySelector("#posenet-viz");
+
+// Element for starting the pushup challenge
 const startbutton = document.querySelector("#start-button");
 
+let model; // scope limité à ce script
+
+/**
+ * Open the camera and launch streaming.
+ */
 async function startCamera() {
 
     let constraints = { video: { facingMode: "user" }, audio: false };
@@ -16,7 +27,6 @@ async function startCamera() {
     cameraviz.srcObject = stream;
 }
 
-let model; // scope limité à ce script
 
 async function loadPosenet() {
 
