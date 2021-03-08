@@ -12,7 +12,12 @@ const posenetviz = document.querySelector("#posenet-viz");
 // Element for starting the pushup challenge
 const startbutton = document.querySelector("#start-button");
 
+const repscounter = document.querySelector("#reps-counter p");
+
 let model; // scope limité à ce script
+
+let tPrevious = performance.now();
+let fps = 0.0;
 
 startbutton.onclick = async function () {
 
@@ -56,13 +61,18 @@ function launchPredictionLoop() {
 }
 
 function predictionLoop(timestamp) {
-    // tNow = performance.now();
-    // repscounter.fps = (1000. / (tNow - repscounter.tPrevious)).toFixed(1);
-    // repscounter.tPrevious = tNow;
 
+    updateFps();
     const { pose, prediction } = predict(cameraviz);
     drawPose(pose);
+    displayReps();
     window.requestAnimationFrame(predictionLoop);
+}
+
+function updateFps() {
+    const tNow = performance.now();
+    fps = (1000. / (tNow - tPrevious)).toFixed(1);
+    tPrevious = tNow;
 }
 
 async function predict(imageinput) {
@@ -92,6 +102,10 @@ function drawPose(pose) {
         tmPose.drawKeypoints(pose.keypoints, minPartConfidence, ctx);
         tmPose.drawSkeleton(pose.keypoints, minPartConfidence, ctx);
     }
+}
+
+function displayReps() {
+    repscounter.innerText = `${fps}fps - 0reps`;
 }
 
 // // append/get elements to the DOM
