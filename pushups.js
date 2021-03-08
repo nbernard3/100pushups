@@ -1,8 +1,6 @@
 // Enforce modern Javascript mode
 "use strict";
 
-const BUFFER_SIZE = 10;
-
 // Element holding the vizualisation of what the camera sees
 const cameraviz = document.querySelector("#camera-viz");
 
@@ -12,12 +10,17 @@ const posenetviz = document.querySelector("#posenet-viz");
 // Element for starting the pushup challenge
 const startbutton = document.querySelector("#start-button");
 
+// Element for displaying fps and reps number
 const repscounter = document.querySelector("#reps-counter p");
 
-let model; // scope limité à ce script
+// The artificial brain
+let model;
 
-let tPrevious = performance.now();
+// Current FPS
 let fps = 0.0;
+
+// Last call date
+let tPrevious = performance.now();
 
 startbutton.onclick = async function () {
 
@@ -54,6 +57,9 @@ async function loadPosenet() {
     console.info("Model launched");
 }
 
+/**
+ * Launch the infinite loop.
+ */
 function launchPredictionLoop() {
     posenetviz.height = cameraviz.height;
     posenetviz.width = cameraviz.width;
