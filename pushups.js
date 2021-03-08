@@ -75,22 +75,13 @@ function updateFps() {
 }
 
 async function predict(imageinput) {
+
     // Prediction #1: run input through posenet
     // estimatePose can take in an image, video or canvas html element
     const { pose, posenetOutput } = await model.estimatePose(imageinput);
     // Prediction 2: run input through teachable machine classification model
     const prediction = await model.predict(posenetOutput);
     return { pose, prediction };
-
-    // for (let i = 0; i < prediction.length; i++) {
-    //     probability = repscounter.labels[i].probability;
-    //     probability.shift();
-    //     probability.push(prediction[i].probability);
-
-    //     repscounter.labels[i].probability = probability;
-    //     repscounter.labels[i].filteredProbability = probability.reduce((total, el) => total + el, 0) / probability.length;
-    // }
-
 }
 
 function drawPose(pose) {
@@ -107,8 +98,3 @@ function displayReps() {
     updateFps();
     repscounter.innerText = `${fps}fps - 0reps`;
 }
-
-// // append/get elements to the DOM
-// const canvas = document.getElementById("posenet-viz");
-// canvas.width = size; canvas.height = size;
-// ctx = canvas.getContext("2d");
