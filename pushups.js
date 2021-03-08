@@ -44,9 +44,9 @@ async function startCamera() {
  */
 async function loadPosenet() {
 
-    const URL = "./model/";
-    const modelURL = URL + "model.json";
-    const metadataURL = URL + "metadata.json";
+    const url = "./model/";
+    const modelURL = url + "model.json";
+    const metadataURL = url + "metadata.json";
 
     model = await tmPose.load(
         modelURL,
@@ -62,7 +62,6 @@ function launchPredictionLoop() {
 
 function predictionLoop(timestamp) {
 
-    updateFps();
     const { pose, prediction } = predict(cameraviz);
     drawPose(pose);
     displayReps();
@@ -105,6 +104,7 @@ function drawPose(pose) {
 }
 
 function displayReps() {
+    updateFps();
     repscounter.innerText = `${fps}fps - 0reps`;
 }
 
