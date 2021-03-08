@@ -74,12 +74,6 @@ function predictionLoop(timestamp) {
     window.requestAnimationFrame(predictionLoop);
 }
 
-function updateFps() {
-    const tNow = performance.now();
-    fps = (1000. / (tNow - tPrevious)).toFixed(1);
-    tPrevious = tNow;
-}
-
 async function predict(imageinput) {
 
     // Prediction #1: run input through posenet
@@ -103,4 +97,10 @@ function drawPose(pose) {
 function displayReps() {
     updateFps();
     repscounter.innerText = `${fps}fps - 0reps`;
+}
+
+function updateFps() {
+    const tNow = performance.now();
+    fps = (1000. / (tNow - tPrevious)).toFixed(1);
+    tPrevious = tNow;
 }
